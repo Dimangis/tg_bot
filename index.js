@@ -14,55 +14,67 @@ const bot = new TelegramBot(TOKEN, {
         }
     }
 })
+arrayModel = ["Model_A 👩‍🎓", "Model_B 👩‍🎤", "Model_C 🤰"]
+arrayFilm = []
+for (i = 0; i < 10; ++i) {
+    arrayFilm[i] = "Film_" + i;
+    console.log(arrayFilm[i])
+}
+// bot.onText(/\/start/, msg => {
+//     const {id} = msg.chat
+//     bot.sendMessage(id, debug(msg))
+// })
 
-/*bot.onText(/\/start/, msg => {
-    const {id} = msg.chat
-    bot.sendMessage(id, debug(msg))
+// bot.onText(/\/help (.+)/, (msg, arr) => {
+//     const {id} =msg.chat
+//     bot.sendMessage(id, debug(arr))
+// })
+
+bot.on('message', msg => {
+// setTimeout(() => {
+//     bot.sendMessage(msg.chat.id, `https://pecom.ru/services/additional-features/nalozhennyy-platyezh/`,
+//      {disable_web_page_preview: true,
+//     disable_notification: true})
+// }, 4000)
+const chatId = msg.chat.id
+
+if (msg.text === 'Модели 🙎‍♀️') {
+    for( i = 0; i<arrayModel.length; ++i) {
+        bot.sendMessage(chatId, arrayModel[i])
+    }
+    
+} else if (msg.text === 'Жанры 🎥'){
+    // for( i = 0; i<arrayModel.length; ++i) {
+    //     bot.sendMessage(chatId, arrayFilm[i])
+    // }
+    bot.sendMessage(chatId, 'Жанры:', {
+        reply_markup: {
+            keyboard: [
+                ['Category_A 🎦', 'Category_B 🎞'],
+                ['Category_C 🎬', 'Category_D 🦞'],
+                ['Главная']
+            ]
+        }
+    })
+} else if (msg.text === 'Профиль') {
+    message = ""    
+    for( i = 0; i<arrayFilm.length; ++i) {
+        message += arrayFilm[i] + "\n"            
+    }
+    bot.sendMessage(chatId, message)   
+}
+else {
+    bot.sendMessage(chatId, 'Главная', {
+        reply_markup: {
+            keyboard: [
+                ['Модели 🙎‍♀️', 'Жанры 🎥'],
+                ['Профиль', 'Помощь'],
+                ['Купить']
+            ]
+        }
+    })
+}
 })
-
-bot.onText(/\/help (.+)/, (msg, arr) => {
-    const {id} =msg.chat
-    bot.sendMessage(id, debug(arr))
-})*/
-
-// bot.on('message', msg => {
-// // setTimeout(() => {
-// //     bot.sendMessage(msg.chat.id, `https://pecom.ru/services/additional-features/nalozhennyy-platyezh/`,
-// //      {disable_web_page_preview: true,
-// //     disable_notification: true})
-// // }, 4000)
-// const chatId = msg.chat.id
-
-// // if (msg.text === 'Закрыть') {
-// //     bot.sendMessage(chatId, 'Закрываю клавиатуру', {
-// //         reply_markup: {
-// //             remove_keyboard: true
-// //         }
-// //     })
-// // } else if (msg.text === 'Ответить'){
-// //     bot.sendMessage(chatId, 'Отвечаю', {
-// //         reply_markup: {
-// //             remove_keyboard: true
-// //         }
-// //     })
-// // } else {
-// //     bot.sendMessage(chatId, 'Клавиатура', {
-// //         reply_markup: {
-// //             keyboard: [
-// //                 [{
-// //                     text: 'Отправить местоположение',
-// //                     request_location: true
-// //                 }],
-// //                 ['Ответить', 'Закрыть'],
-// //                 [{
-// //                     text: 'Отправить контакт',
-// //                     request_contact: true
-// //                 }]
-// //             ]
-// //         }
-// //     })
-// // }
-
 // bot.sendMessage(chatId, 'Inline keyboard', {
 //     reply_markup: {
 //         inline_keyboard: [
@@ -116,23 +128,48 @@ bot.onText(/\/pay/, msg => {
 
     bot.sendInvoice(
         chatId,
-        'Audi A4', //title
-        'Best car ever in tg bot', //description
-        'payload', //payload
+        'Eskin carpet', 
+        'The best carpet in the world for Mike Eskin!!!', 
+        'payload', 
         '381764678:TEST:74324',
-        'SOME_RANDOM_STRING_KEY',
         'RUB',
         [
             {
-                label: 'audi_a4',
+                label: 'Black_Carpet',
                 amount: 30000 //300.00RUB считаются копейки
             }
-        ]
-        // {
-        //     photo_url: './audi.png',
-        //     need_name: true,
-        //     is_flexible: true
-        // }
+        ],
+        {
+            photo_url: 'https://main-cdn.sbermegamarket.ru/big2/hlr-system/801/408/052/123/232/2/600014045219b0.jpeg'
+        }
     )
+    bot.on('pre_checkout_query', async ctx => {
 
+        try {
+    
+            await bot.answerPreCheckoutQuery(ctx.id, true);
+    
+        }
+        catch(error) {
+    
+            console.log(error);
+    
+        }
+    
+    })
+    
+    bot.on('successful_payment', async ctx => {
+    
+        try {
+            bot.sendMessage(chatId, 'Sending video...')
+            bot.sendVideo(chatId, './v1.mp4')
+        }
+        catch(error) {
+    
+            console.log(error);
+    
+        }
+    
+    })
 })
+
